@@ -13,20 +13,22 @@ class ServersTest(unittest.TestCase):
     def tearDownClass(cls):
         pass
     
-    @attr(type='positive')
+    #@attr(type='positive')
     def test_create_delete_server(self):
-        server = self.client.create_server('clienttest', 2, 1)
+        meta = { 'hello' : 'world' }
+        resp, server = self.client.create_server('clienttest', 2, 1, meta=meta)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         self.client.delete_server(self.id)
     
-    @attr(type='positive')
-    def test_update_server(self):
-        server = self.client.create_server('clienttest', 2, 1)
-        self.id = server['server']['id']
-        self.client.wait_for_server_status(self.id, 'ACTIVE')
-        self.client.update_server(name='newname')
-        resp, server = self.client.get_server(self.id)
-        print server['server']['name']
-        self.client.delete_server(self.id)
+    #@attr(type='positive')
+    #def test_update_server(self):
+    #    resp, server = self.client.create_server('clienttest', 2, 1)
+    #    self.id = server['server']['id']
+    #    self.client.wait_for_server_status(self.id, 'ACTIVE')
+    #    self.client.update_server(self.id, name='newname')
+    #    resp, server = self.client.get_server(self.id)
+    #    print server
+    #    self.assertEqual('newname', server['server']['name'])
+    #    self.client.delete_server(self.id)
 

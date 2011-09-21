@@ -7,7 +7,7 @@ class ServersClient(object):
     def __init__(self, username, key, auth_url):
         self.client = rest_client.RestClient(username, key, auth_url)
         
-    def create_server(self, name, image_ref, flavor_ref):
+    def create_server(self, name, image_ref, flavor_ref, meta = None, personality = None):
         
         post_body = {
             'name': name,
@@ -15,42 +15,50 @@ class ServersClient(object):
             'flavorRef': flavor_ref,
         }
         
+        if meta != None:
+            post_body['metadata'] = meta
+        
         post_body = json.dumps({'server': post_body})
-        resp, body = self.client.put('servers', post_body)
+        resp, body = self.client.post('servers', post_body)
+        print body
         body = json.loads(body)
         return resp, body
         
-    def update_server(self, name):
+    def update_server(self, server_id, name):
         post_body = {
             'name' : name,
         }
         
         post_body = json.dumps({'server': post_body})
-        resp, body = self.client.post('servers', post_body)
+        resp, body = self.client.put("servers/%s" % str(server_id), post_body)
         body = json.loads(body)
         return resp, body
         
     def get_server(self, server_id):
-        return self.client.get("servers/%s" % str(server_id))
+        resp, body = self.client.get("servers/%s" % str(server_id))
+        body = json.loads(body)
+        return resp, body
         
     def delete_server(self, server_id):
         return self.client.delete("servers/%s" % str(server_id))
         
     def list_servers(self):
-        return self.client.get('servers')
+        resp, body = self.client.get('servers')
+        body = json.loads(body)
+        return resp, body
         
     def list_servers_with_details(self):
-        return self.client.get('servers/detail')
+        resp, body = self.client.get('servers/detail')
+        body = json.loads(body)
+        return resp, body
         
     def wait_for_server_status(self, server_id, status):
         resp, body = self.get_server(server_id)
-        body = json.loads(body)
         server_status = body['server']['status']
         
         while(server_status != status):
             time.sleep(5)
             resp, body = self.get_server(server_id)
-            body = json.loads(body)
             server_status = body['server']['status']
             
             if(server_status == 'ERROR'):

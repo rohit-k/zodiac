@@ -20,6 +20,8 @@ class RestClient(object):
             raise
             
     def post(self, url, body):
+        print url
+        print body
         return self.request('POST', url, body)
         
     def get(self, url):
