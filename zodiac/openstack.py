@@ -8,4 +8,4 @@ class Manager(object):
         TODO: Read user, key, auth_url from configuration file
         """
         
-        self.servers_client = servers_json_client.ServersClient(user, key, auth_url)
+        self.servers_client = servers_json_client.ServersClient('dwalleck', 'aacfe0a3-d0b6-4ecc-a469-912a6a629e6d', 'http://alpha.ord.servers.api.rackspacecloud.com:8774/v1.1')

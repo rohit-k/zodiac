@@ -20,8 +20,6 @@ class RestClient(object):
             raise
             
     def post(self, url, body):
-        print url
-        print body
         return self.request('POST', url, body)
         
     def get(self, url):
@@ -38,9 +36,6 @@ class RestClient(object):
         
         params = {}
         headers = {'Content-Type': 'application/json', 'X-Auth-Token': self.token}
-        
-        #if body == None:
-        #    body = '{}'
         
         req_url = "%s/%s" % (self.base_url, url)    
         resp, body = self.http_obj.request(req_url, method, headers=headers, body=body)
