@@ -9,6 +9,10 @@ class RestClient(object):
         self.token, self.base_url = self.authenticate(user, key) 
         
     def authenticate(self, user, api_key):        
+        """
+        Provides authenitication for the target API
+        """
+        
         params = {}
         params['headers'] = {'User-Agent': 'Zodiac-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
 
@@ -32,6 +36,8 @@ class RestClient(object):
         return self.request('PUT', url, body)
         
     def request(self, method, url, body=None):
+        """ A simple HTTP request interface."""
+        
         self.http_obj = httplib2.Http()
         
         params = {}

@@ -7,7 +7,16 @@ class ServersClient(object):
     def __init__(self, username, key, auth_url):
         self.client = rest_client.RestClient(username, key, auth_url)
         
-    def create_server(self, name, image_ref, flavor_ref, meta = None, personality = None):
+    def create_server(self, name, image_ref, flavor_ref, meta = None, 
+                      personality = None):
+    """
+    Creates an instance of a server.
+    name: The name of the server.
+    image_ref: The reference to the image used to build the server.
+    flavor_ref: The flavor used to build the server.
+    meta: A dictionary of values to be used as metadata. The limit is 5 key/values.
+    personality: A list of dictionaries for files to be injected into the server.
+    """
         
         post_body = {
             'name': name,
@@ -23,7 +32,17 @@ class ServersClient(object):
         body = json.loads(body)
         return resp, body
         
-    def update_server(self, server_id, name = None, meta = None, ipv6 = None, ipv4 = None):
+    def update_server(self, server_id, name = None, meta = None, ipv6 = None, 
+                      ipv4 = None):
+        """
+        Updates the properties of an existing server.
+        server_id: The id of an existing server.
+        name (optional): The name of the server.
+        meta (optional): A dictionary of values to be used as metadata. 
+        personality: A list of files to be injected into the server.
+        ipv4: The IPv4 address of the server.
+        ipv6: The IPv6 address of the server.
+        """
         
         post_body = {}
         
@@ -45,24 +64,29 @@ class ServersClient(object):
         return resp, body
         
     def get_server(self, server_id):
+        """Returns the properties of an existing server."""
         resp, body = self.client.get("servers/%s" % str(server_id))
         body = json.loads(body)
         return resp, body
         
     def delete_server(self, server_id):
+        """Deletes the given server."""
         return self.client.delete("servers/%s" % str(server_id))
         
     def list_servers(self):
+        """Lists all servers for a tenant."""
         resp, body = self.client.get('servers')
         body = json.loads(body)
         return resp, body
         
     def list_servers_with_details(self):
+        """Lists all servers in detail for a tenant."""
         resp, body = self.client.get('servers/detail')
         body = json.loads(body)
         return resp, body
         
     def wait_for_server_status(self, server_id, status):
+        """Waits for a server to reach a given status."""
         resp, body = self.get_server(server_id)
         server_status = body['server']['status']
         
@@ -75,16 +99,20 @@ class ServersClient(object):
                 raise
                 
     def list_addresses(self, server_id):
+        """Lists all addresses for a server."""
         resp, body = self.client.get("servers/%s/ips" % str(server_id))
         body = json.loads(body)
         return resp, body
         
     def list_addresses_by_network(self, server_id, network_id):
-        resp, body = self.client.get("servers/%s/ips/%s" % (str(server_id), network_id))
+        """Lists all addresses of a specific network type for a server."""
+        resp, body = self.client.get("servers/%s/ips/%s" % 
+                                    (str(server_id), network_id))
         body = json.loads(body)
         return resp, body
     
     def change_password(self, server_id, password):
+        """Changes the root password for the server."""
         post_body = {
             'changePassword' : {
                 'adminPass': password,
@@ -95,6 +123,7 @@ class ServersClient(object):
         return self.client.post('servers/%s/action' % str(server_id), post_body)
         
     def reboot(self, server_id, reboot_type):
+        """Reboots a server."""
         post_body = {
             'reboot' : {
                 'type': reboot_type,
@@ -105,13 +134,16 @@ class ServersClient(object):
         return self.client.post('servers/%s/action' % str(server_id), post_body)
 
         
-    def rebuild(self, server_id, name, image_ref):
+    def rebuild(self, server_id, name = None, image_ref):
+        """Rebuilds a server with a new image."""
         post_body = {
             'rebuild' : {
-                'name': name,
-                'imageRef' : image_ref
+                'imageRef' : image_ref,
             }
         }
+        
+        if name != None:
+            post_body['name'] = name
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
@@ -119,6 +151,7 @@ class ServersClient(object):
         return resp, body
         
     def resize(self, server_id, flavor_ref):
+        """Changes the flavor of a server."""
         post_body = {
             'resize' : {
                 'flavorRef': flavor_ref,
@@ -131,6 +164,7 @@ class ServersClient(object):
         return resp, body
     
     def confirm_resize(self, server_id):
+        """Confirms the flavor change for a server."""
         post_body = {
             'confirmResize' : null
         }
@@ -141,6 +175,7 @@ class ServersClient(object):
         return resp, body
     
     def revert_resize(self, server_id):
+        """Reverts a server back to its original flavor."""
         post_body = {
             'revertResize' : null
         }
@@ -151,6 +186,7 @@ class ServersClient(object):
         return resp, body
         
     def create_image(self, server_id, image_name):
+        """Creates an image of the given server."""
         post_body = {
             'createImage' : {
                 'name': image_name,
