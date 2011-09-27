@@ -8,7 +8,7 @@ class ServerActionsTest(unittest.TestCase):
     def setUpClass(cls):
         cls.os = openstack.Manager()
         cls.client = cls.os.servers_client
-        resp, server = cls.client.create_server('clienttest', 2, 1)
+        resp, server = cls.client.create_server('clienttest', 6, 1)
         cls.id = server['server']['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
@@ -54,7 +54,7 @@ class ServerActionsTest(unittest.TestCase):
     def test_resize_server_revert(self):
         resp, server = self.client.create_server('clienttest', 2, 3)
         id = server['server']['id']
-        cls.client.wait_for_server_status(id, 'ACTIVE')
+        self.client.wait_for_server_status(id, 'ACTIVE')
         
         self.client.resize(id, 1)
         self.client.wait_for_server_status(id, 'VERIFY_RESIZE')

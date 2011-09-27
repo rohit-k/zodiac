@@ -9,14 +9,14 @@ class ServersClient(object):
         
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
                       personality = None):
-    """
-    Creates an instance of a server.
-    name: The name of the server.
-    image_ref: The reference to the image used to build the server.
-    flavor_ref: The flavor used to build the server.
-    meta: A dictionary of values to be used as metadata. The limit is 5 key/values.
-    personality: A list of dictionaries for files to be injected into the server.
-    """
+        """
+        Creates an instance of a server.
+        name: The name of the server.
+        image_ref: The reference to the image used to build the server.
+        flavor_ref: The flavor used to build the server.
+        meta: A dictionary of values to be used as metadata. The limit is 5 key/values.
+        personality: A list of dictionaries for files to be injected into the server.
+        """
         
         post_body = {
             'name': name,
@@ -134,7 +134,7 @@ class ServersClient(object):
         return self.client.post('servers/%s/action' % str(server_id), post_body)
 
         
-    def rebuild(self, server_id, name = None, image_ref):
+    def rebuild(self, server_id, image_ref, name = None):
         """Rebuilds a server with a new image."""
         post_body = {
             'rebuild' : {

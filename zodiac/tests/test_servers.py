@@ -16,14 +16,14 @@ class ServersTest(unittest.TestCase):
     @attr(type='positive')
     def test_create_delete_server(self):
         meta = { 'hello' : 'world' }
-        resp, server = self.client.create_server('clienttest', 2, 1, meta=meta)
+        resp, server = self.client.create_server('clienttest', 6, 1, meta=meta)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         self.client.delete_server(self.id)
     
     @attr(type='positive')
     def test_update_server_name(self):
-        resp, server = self.client.create_server('clienttest', 2, 1)
+        resp, server = self.client.create_server('clienttest', 6, 1)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         self.client.update_server(self.id, name='newname')
@@ -33,7 +33,7 @@ class ServersTest(unittest.TestCase):
         
     def test_update_server_metadata(self):
         meta = { 'hello' : 'world' }
-        resp, server = self.client.create_server('clienttest', 2, 1, meta=meta)
+        resp, server = self.client.create_server('clienttest', 6, 1, meta=meta)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         
@@ -44,7 +44,7 @@ class ServersTest(unittest.TestCase):
         self.client.delete_server(self.id)
     
     def test_update_server_address(self):
-        resp, server = self.client.create_server('clienttest', 2, 1)
+        resp, server = self.client.create_server('clienttest', 6, 1)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         

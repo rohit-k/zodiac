@@ -9,7 +9,7 @@ class ServerAddressesTest(unittest.TestCase):
         cls.os = openstack.Manager()
         cls.client = cls.os.servers_client
         
-        resp, server = cls.client.create_server('clienttest', 2, 1)
+        resp, server = cls.client.create_server('clienttest', 6, 1)
         cls.id = server['server']['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
