@@ -2,7 +2,7 @@ import httplib2
 
 class RestClient(object):
     
-    def __init__(self, user, key, auth_url):
+    def __init__(self, user, key, auth_url, base_url = None):
         self.user = user
         self.key = key
         self.auth_url = auth_url

@@ -14,8 +14,10 @@ class ServersClient(object):
         name: The name of the server.
         image_ref: The reference to the image used to build the server.
         flavor_ref: The flavor used to build the server.
-        meta: A dictionary of values to be used as metadata. The limit is 5 key/values.
-        personality: A list of dictionaries for files to be injected into the server.
+        meta: A dictionary of values to be used as metadata. 
+        The limit is 5 key/values.
+        personality: A list of dictionaries for files to be injected into 
+        the server.
         """
         
         post_body = {
@@ -146,7 +148,8 @@ class ServersClient(object):
             post_body['name'] = name
         
         post_body = json.dumps(post_body)
-        resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
+        resp, body = self.client.post('servers/%s/action' 
+                                      % str(server_id), post_body)
         body = json.loads(body)
         return resp, body
         
@@ -159,7 +162,8 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
+        resp, body = self.client.post('servers/%s/action' % 
+                                      str(server_id), post_body)
         body = json.loads(body)
         return resp, body
     
@@ -170,7 +174,8 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
+        resp, body = self.client.post('servers/%s/action' % 
+                                      str(server_id), post_body)
         body = json.loads(body)
         return resp, body
     
@@ -181,7 +186,8 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
+        resp, body = self.client.post('servers/%s/action' % 
+                                      str(server_id), post_body)
         body = json.loads(body)
         return resp, body
         
@@ -194,7 +200,8 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        resp, body = self.client.post('servers/%s/action' % str(server_id), post_body)
+        resp, body = self.client.post('servers/%s/action' % 
+                                      str(server_id), post_body)
         body = json.loads(body)
         return resp, body
             
