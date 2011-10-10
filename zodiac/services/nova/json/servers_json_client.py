@@ -91,6 +91,7 @@ class ServersClient(object):
         """Waits for a server to reach a given status."""
         resp, body = self.get_server(server_id)
         server_status = body['server']['status']
+        start = int(time.time())
         
         while(server_status != status):
             time.sleep(5)
@@ -98,6 +99,9 @@ class ServersClient(object):
             server_status = body['server']['status']
             
             if(server_status == 'ERROR'):
+                raise
+                
+            if (int(time.time()) - start >= 120):
                 raise
                 
     def list_addresses(self, server_id):
