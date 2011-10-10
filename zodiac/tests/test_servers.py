@@ -8,10 +8,6 @@ class ServersTest(unittest.TestCase):
     def setUpClass(cls):
         cls.os = openstack.Manager()
         cls.client = cls.os.servers_client
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.client.delete_server(cls.id)
     
     @attr(type='positive')
     def test_create_delete_server(self):
@@ -20,6 +16,29 @@ class ServersTest(unittest.TestCase):
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         self.client.delete_server(self.id)
+        
+    def test_create_server_min_ram_not_met(self):
+        pass
+        
+    def test_create_server_with_admin_password(self):
+        pass
+        
+    def test_create_server_with_personality(self):
+        #TODO: Check file permissions/group/etc
+        pass
+        
+    def test_create_server_with_metadata(self):
+        pass
+        
+    def test_create_server_with_access_address(self):
+        pass
+        
+    def test_get_server_details(self):
+        pass
+        
+    def test_delete_server(self):
+        #TODO: Also verify that images created from the deleted server are also deleted
+        pass
     
     @attr(type='positive')
     def test_update_server_name(self):
@@ -43,15 +62,15 @@ class ServersTest(unittest.TestCase):
         self.assertEqual('data', server['server']['metadata']['test'])
         self.client.delete_server(self.id)
     
-    def test_update_server_address(self):
+    def test_update_access_server_address(self):
         resp, server = self.client.create_server('clienttest', 6, 1)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         
         self.client.update_server(self.id, ipv4='1.1.1.1', ipv6='::babe:2.2.2.2')
         resp, server = self.client.get_server(self.id)
-        self.assertEqual('1.1.1.1', server['server']['addresses']['public'][0]['addr'])
-        self.assertEqual('::babe:2.2.2.2', server['server']['addresses']['public'][1]['addr'])
+        self.assertEqual('1.1.1.1', server['server']['addresses']['public'][1]['addr'])
+        self.assertEqual('::babe:2.2.2.2', server['server']['addresses']['public'][0]['addr'])
         
         self.client.delete_server(self.id)
         

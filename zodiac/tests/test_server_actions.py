@@ -22,6 +22,9 @@ class ServerActionsTest(unittest.TestCase):
         
         #TODO: SSH in to verify the new password works
         
+    def test_server_password_complexity_not_met(self):
+        pass
+        
     def test_reboot_server_hard(self):
         #TODO: Add validation the server has been rebooted
         
@@ -40,6 +43,14 @@ class ServerActionsTest(unittest.TestCase):
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         resp, server = self.client.get_server(self.id)
         self.assertEqual('3', server['server']['image']['id'])
+        
+        #All IPs should be the same, server ref should be the same
+    
+    def test_rebuild_with_new_name(self):
+        pass
+        
+    def test_rebuild_with_metadata(self):
+        pass
         
     def test_resize_server_confirm(self):
         self.client.resize(self.id, 2)
