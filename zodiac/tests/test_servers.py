@@ -12,25 +12,60 @@ class ServersTest(unittest.TestCase):
     @attr(type='positive')
     def test_create_delete_server(self):
         meta = { 'hello' : 'world' }
-        resp, server = self.client.create_server('clienttest', 6, 1, meta=meta)
+        accessIPv4 = '1.1.1.1'
+        resp, server = self.client.create_server('clienttest', 6, 1, meta=meta, accessIPv4=accessIPv4)
         self.id = server['server']['id']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
+        
+        resp, server = self.client.get_server(self.id)
+        self.assertEqual('1.1.1.1', server['server']['accessIPv4'])
+        
         self.client.delete_server(self.id)
         
     def test_create_server_min_ram_not_met(self):
         pass
         
     def test_create_server_with_admin_password(self):
-        pass
+        resp, server = self.client.create_server('clienttest', 6, 1, adminPass='testpassword')
+        id = server['server']['id']
+        print server
+        self.assertEqual('testpassword', server['server']['adminPass'])
+        
+        self.client.wait_for_server_status(id, 'ACTIVE')
+        self.client.delete_server(id)
         
     def test_create_server_with_personality(self):
         #TODO: Check file permissions/group/etc
         pass
         
-    def test_create_server_with_metadata(self):
+    def test_list_servers(self):
+        self.client.list_servers()
+        
+    def test_list_servers_filter_by_image(self):
+        pass
+     
+    def test_list_servers_filter_by_flavor(self):
+        pass    
+    
+    def test_list_servers_filter_by_server_name(self):
         pass
         
-    def test_create_server_with_access_address(self):
+    def test_list_servers_filter_by_server_status(self):
+        pass    
+        
+    def test_list_servers_with_detail(self):
+        self.client.list_servers_with_details()
+        
+    def test_list_servers_detailed_filter_by_image(self):
+        pass
+
+    def test_list_servers_detailed_filter_by_flavor(self):
+        pass    
+
+    def test_list_servers_detailed_filter_by_server_name(self):
+        pass
+
+    def test_list_servers_detailed_filter_by_server_status(self):
         pass
         
     def test_get_server_details(self):
@@ -69,8 +104,8 @@ class ServersTest(unittest.TestCase):
         
         self.client.update_server(self.id, ipv4='1.1.1.1', ipv6='::babe:2.2.2.2')
         resp, server = self.client.get_server(self.id)
-        self.assertEqual('1.1.1.1', server['server']['addresses']['public'][1]['addr'])
-        self.assertEqual('::babe:2.2.2.2', server['server']['addresses']['public'][0]['addr'])
+        self.assertEqual('1.1.1.1', server['server']['accessIPv4'])
+        self.assertEqual('::babe:2.2.2.2', server['server']['accessIPv6'])
         
         self.client.delete_server(self.id)
         

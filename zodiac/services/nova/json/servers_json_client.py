@@ -8,7 +8,8 @@ class ServersClient(object):
         self.client = rest_client.RestClient(username, key, auth_url)
         
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
-                      personality = None):
+                      personality = None, accessIPv4 = None, accessIPv6 = None,
+                      adminPass = None):
         """
         Creates an instance of a server.
         name: The name of the server.
@@ -28,6 +29,18 @@ class ServersClient(object):
         
         if meta != None:
             post_body['metadata'] = meta
+            
+        if personality != None:
+            post_body['personality'] = personality
+            
+        if adminPass != None:
+            post_body['adminPass'] = adminPass
+            
+        if accessIPv4 != None:
+            post_body['accessIPv4'] = accessIPv4
+            
+        if accessIPv6 != None:
+            post_body['accessIPv6'] = accessIPv6
         
         post_body = json.dumps({'server': post_body})
         resp, body = self.client.post('servers', post_body)
@@ -75,9 +88,18 @@ class ServersClient(object):
         """Deletes the given server."""
         return self.client.delete("servers/%s" % str(server_id))
         
-    def list_servers(self):
+    def list_servers(self, params = None):
         """Lists all servers for a tenant."""
-        resp, body = self.client.get('servers')
+        
+        url = 'servers'
+        if params != None:
+            param_list = []
+            for param, value in params.iteritems():
+                param_list.append("%s=%s&" % (param, value))
+                
+            url = "servers?".join(param_list)
+        
+        resp, body = self.client.get(url)
         body = json.loads(body)
         return resp, body
         
@@ -101,7 +123,7 @@ class ServersClient(object):
             if(server_status == 'ERROR'):
                 raise
                 
-            if (int(time.time()) - start >= 120):
+            if (int(time.time()) - start >= 300):
                 raise
                 
     def list_addresses(self, server_id):
