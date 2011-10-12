@@ -123,7 +123,7 @@ class ServersClient(object):
             if(server_status == 'ERROR'):
                 raise
                 
-            if (int(time.time()) - start >= 300):
+            if (int(time.time()) - start >= 600):
                 raise
                 
     def list_addresses(self, server_id):
@@ -190,7 +190,6 @@ class ServersClient(object):
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
                                       str(server_id), post_body)
-        body = json.loads(body)
         return resp, body
     
     def confirm_resize(self, server_id):
@@ -202,7 +201,6 @@ class ServersClient(object):
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
                                       str(server_id), post_body)
-        body = json.loads(body)
         return resp, body
     
     def revert_resize(self, server_id):
@@ -214,7 +212,6 @@ class ServersClient(object):
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
                                       str(server_id), post_body)
-        body = json.loads(body)
         return resp, body
         
     def create_image(self, server_id, image_name):

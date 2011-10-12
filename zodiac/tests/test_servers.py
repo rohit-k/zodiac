@@ -28,7 +28,6 @@ class ServersTest(unittest.TestCase):
     def test_create_server_with_admin_password(self):
         resp, server = self.client.create_server('clienttest', 6, 1, adminPass='testpassword')
         id = server['server']['id']
-        print server
         self.assertEqual('testpassword', server['server']['adminPass'])
         
         self.client.wait_for_server_status(id, 'ACTIVE')
@@ -93,6 +92,8 @@ class ServersTest(unittest.TestCase):
         
         meta = { 'test' : 'data' }
         self.client.update_server(self.id, meta=meta)
+        self.client.wait_for_server_status(self.id, 'ACTIVE')
+        
         resp, server = self.client.get_server(self.id)
         self.assertEqual('data', server['server']['metadata']['test'])
         self.client.delete_server(self.id)

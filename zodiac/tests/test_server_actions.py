@@ -63,18 +63,18 @@ class ServerActionsTest(unittest.TestCase):
         self.assertEqual('3', server['server']['flavor']['id'])
         
     def test_resize_server_revert(self):
-        resp, server = self.client.create_server('clienttest', 2, 3)
+        resp, server = self.client.create_server('clienttest', 6, 1)
         id = server['server']['id']
         self.client.wait_for_server_status(id, 'ACTIVE')
         
-        self.client.resize(id, 1)
+        self.client.resize(id, 2)
         self.client.wait_for_server_status(id, 'VERIFY_RESIZE')
         
         self.client.revert_resize(id)
         self.client.wait_for_server_status(id, 'ACTIVE')
         
         resp, server = self.client.get_server(id)
-        self.assertEqual('3', server['server']['flavor']['id'])
+        self.assertEqual('1', server['server']['flavor']['id'])
         
         self.client.delete_server(id)
     
