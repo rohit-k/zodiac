@@ -1,12 +1,9 @@
-TODO: Flesh this out. This is a very much a work in progress still
-
-Zodiac uses the Python Nose testing framework. To run all tests, execute nosetests from the top
+Zodiac is a testing framework built on Nose. The goals of this design strategy are to encourage reusable code, be flexible, and to be maintainable. The design patterns used in Zodiac allow for both JSON and XML testing of REST services. In addition, multiple API definitions can be made in a single project, allowing for integration testing between services. The service tier also allows other structures such as performance, load, and fuzz tests to be created and run. 
 level directory. 
 
-TODO: Decide on tagging methodology
+To run all tests: "nosetests" from the root directory
 To run proper subsets of tests, use the -a argument with the desired tag.
 
 Next items
--Backfill comments
--Decide on tagging name/types
--Test using Nose's multithreaded execution
+Pull static values from a configuration file
+Create a data tier so that configurations and test data can be pulled from a database
