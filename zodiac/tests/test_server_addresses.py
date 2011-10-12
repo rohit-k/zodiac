@@ -19,6 +19,7 @@ class ServerAddressesTest(unittest.TestCase):
         
     @attr(type='positive')
     def test_list_addresses(self):
+        """ All public and private addresses for a server should be returned """
         
         resp, addresses = self.client.list_addresses(self.id)
         self.assertTrue(addresses['addresses']['public'][0]['addr'] != '')
@@ -27,6 +28,7 @@ class ServerAddressesTest(unittest.TestCase):
         self.assertTrue(addresses['addresses']['private'][1]['addr'] != '')
         
     def test_list_addresses_by_network(self):
+        """ Providing a network type should filter the addresses return by that type """
         
         resp, addresses = self.client.list_addresses_by_network(self.id, 'public')
         self.assertTrue(addresses['public'][0]['addr'] != '')

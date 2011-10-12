@@ -103,8 +103,22 @@ class ServersClient(object):
         body = json.loads(body)
         return resp, body
         
-    def list_servers_with_details(self):
+    def list_servers_with_detail(self, params = None):
         """Lists all servers in detail for a tenant."""
+        
+        url = 'servers/detail'
+        if params != None:
+            param_list = []
+            for param, value in params.iteritems():
+                param_list.append("%s=%s&" % (param, value))
+                
+            url = "servers/detail?".join(param_list)
+        
+        resp, body = self.client.get(url)
+        body = json.loads(body)
+        return resp, body
+        
+        
         resp, body = self.client.get('servers/detail')
         body = json.loads(body)
         return resp, body

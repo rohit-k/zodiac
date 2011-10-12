@@ -14,6 +14,7 @@ class ImagesMetadataTest(unittest.TestCase):
         pass
         
     def test_list_image_metadata(self):
+        """ The list of metadata keys and values for the image are returned """
         pass
         
     def test_set_image_metadata(self):
