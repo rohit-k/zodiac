@@ -4,6 +4,8 @@ import unittest2 as unittest
 
 class ImagesMetadataTest(unittest.TestCase):
     
+    _multiprocess_shared_ = True
+    
     @classmethod
     def setUpClass(cls):
         cls.os = openstack.Manager()

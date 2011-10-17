@@ -97,7 +97,7 @@ class ServersClient(object):
             for param, value in params.iteritems():
                 param_list.append("%s=%s&" % (param, value))
                 
-            url = "servers?".join(param_list)
+            url = "servers?" + "".join(param_list)
         
         resp, body = self.client.get(url)
         body = json.loads(body)
@@ -112,7 +112,7 @@ class ServersClient(object):
             for param, value in params.iteritems():
                 param_list.append("%s=%s&" % (param, value))
                 
-            url = "servers/detail?".join(param_list)
+            url = "servers?" + "".join(param_list)
         
         resp, body = self.client.get(url)
         body = json.loads(body)

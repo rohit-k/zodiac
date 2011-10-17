@@ -4,32 +4,33 @@ import unittest2 as unittest
 
 class FlavorsTest(unittest.TestCase):
     
+    _multiprocess_shared_ = True
+    
     @classmethod
     def setUpClass(cls):
         cls.os = openstack.Manager()
-        cls.client = cls.os.servers_client
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
+        cls.client = cls.os.flavors_client
         
     def test_list_flavors(self):
-        """ A list of valid flavors should be returned """
-        pass
+        self.client.list_flavors()
         
     def test_list_flavors_with_detail(self):
-        """ A detailed list of valid flavors should be returned """
-        pass
+        self.client.list_flavors_with_detail()
         
     def test_list_flavors_limit_by_min_ram(self):
-        """ The list of flavors should be filtered by their minimum RAM requirement """
-        pass
+        self.client.list_flavors({'minRam' : '512'})
         
     def test_list_flavors_limit_by_min_disk(self):
         """ The list of flavors should be filtered by their minimum disk requirement """
-        pass
+        self.client.list_flavors({'minDisk' : '30'})
+        
+    def test_list_flavors_detailed_limit_by_min_ram(self):
+        self.client.list_flavors_with_detail({'minRam' : '512'})
+
+    def test_list_flavors_detailed_limit_by_min_disk(self):
+        """ The list of flavors should be filtered by their minimum disk requirement """
+        self.client.list_flavors_with_detail({'minDisk' : '30'})
         
     def test_get_flavor(self):
-        """ The full details for the selected flavor should be returned """
-        pass
+        self.client.get_flavor_details(1)
         

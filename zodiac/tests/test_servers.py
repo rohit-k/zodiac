@@ -4,6 +4,8 @@ import unittest2 as unittest
 
 class ServersTest(unittest.TestCase):
     
+    _multiprocess_shared_ = True
+    
     @classmethod
     def setUpClass(cls):
         cls.os = openstack.Manager()
@@ -53,22 +55,22 @@ class ServersTest(unittest.TestCase):
         
     def test_list_servers_filter_by_image(self):
         """ Filter the list of servers by image """
-        params = {'imageRef', 6}
+        params = {'imageRef' : 2}
         self.client.list_servers(params)
      
     def test_list_servers_filter_by_flavor(self):
         """ Filter the list of servers by flavor """
-        params = {'imageRef', 1}
+        params = {'flavorId' : 1}
         self.client.list_servers(params)  
     
     def test_list_servers_filter_by_server_name(self):
         """ Filter the list of servers by name """
-        params = {'name', 'clienttest'}
+        params = {'name' : 'clienttest'}
         self.client.list_servers(params)
         
     def test_list_servers_filter_by_server_status(self):
         """ Filter the list of servers by server status """
-        params = {'status', 'active'}
+        params = {'status' : 'active'}
         self.client.list_servers(params)    
         
     def test_list_servers_with_detail(self):
@@ -77,22 +79,22 @@ class ServersTest(unittest.TestCase):
         
     def test_list_servers_detailed_filter_by_image(self):
         """ Filter the detailed list of servers by image """
-        params = {'imageRef', 6}
+        params = {'imageRef' : 1}
         self.client.list_servers_with_detail(params)
 
     def test_list_servers_detailed_filter_by_flavor(self):
         """ Filter the detailed list of servers by flavor """
-        params = {'imageRef', 1}
+        params = {'flavorRef' : 1}
         self.client.list_servers_with_detail(params)    
 
     def test_list_servers_detailed_filter_by_server_name(self):
         """ Filter the detailed list of servers by server name """
-        params = {'name', 'clienttest'}
+        params = {'name' : 'clienttest'}
         self.client.list_servers_with_detail(params)
 
     def test_list_servers_detailed_filter_by_server_status(self):
         """ Filter the detailed list of servers by server status """
-        params = {'status', 'active'}
+        params = {'status' : 'active'}
         self.client.list_servers_with_detail(params)
         
     def test_get_server_details(self):
