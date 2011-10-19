@@ -47,8 +47,8 @@ class ServersClient(object):
         body = json.loads(body)
         return resp, body
         
-    def update_server(self, server_id, name = None, meta = None, ipv6 = None, 
-                      ipv4 = None):
+    def update_server(self, server_id, name = None, meta = None, accessIPv4 = None, 
+                      accessIPv6 = None):
         """
         Updates the properties of an existing server.
         server_id: The id of an existing server.
@@ -67,11 +67,11 @@ class ServersClient(object):
         if name != None:
             post_body['name'] = name
         
-        if ipv6 != None:
-            post_body['accessIPv6'] = ipv6
+        if accessIPv4 != None:
+            post_body['accessIPv4'] = accessIPv4
             
-        if ipv4 != None:
-            post_body['accessIPv4'] = ipv4
+        if accessIPv6 != None:
+            post_body['accessIPv6'] = accessIPv6
         
         post_body = json.dumps({'server': post_body})
         resp, body = self.client.put("servers/%s" % str(server_id), post_body)

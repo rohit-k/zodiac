@@ -1,6 +1,7 @@
 from nose.plugins.attrib import attr
 from zodiac import openstack
 import unittest2 as unittest
+import zodiac.config
 
 class ImagesMetadataTest(unittest.TestCase):
     

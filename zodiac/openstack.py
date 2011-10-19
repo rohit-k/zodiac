@@ -8,7 +8,6 @@ class Manager(object):
     def __init__(self):
         """
         Top level manager for all Openstack APIs
-        TODO: Read user, key, auth_url from configuration file
         """
         
         self.config = zodiac.config.ZodiacConfig()
