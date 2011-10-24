@@ -1,11 +1,15 @@
 import json
 import zodiac.common.rest_client as rest_client
 import time
+import zodiac.config
 
 class ServersClient(object):
 
     def __init__(self, username, key, auth_url):
         self.client = rest_client.RestClient(username, key, auth_url)
+        cls.config = zodiac.config.ZodiacConfig()
+        cls.build_interval = self.config.nova.build_interval
+        cls.build_timeout = self.config.nova.build_timeout
         
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
                       personality = None, accessIPv4 = None, accessIPv6 = None,
@@ -130,14 +134,14 @@ class ServersClient(object):
         start = int(time.time())
         
         while(server_status != status):
-            time.sleep(5)
+            time.sleep(self.build_interval)
             resp, body = self.get_server(server_id)
             server_status = body['server']['status']
             
             if(server_status == 'ERROR'):
                 raise
                 
-            if (int(time.time()) - start >= 600):
+            if (int(time.time()) - start >= self.build_timeout):
                 raise
                 
     def list_addresses(self, server_id):

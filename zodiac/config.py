@@ -28,6 +28,11 @@ class NovaConfig(object):
     def api_key(self):
         """API key to use when authenticating. Defaults to 'admin_key'."""
         return self.get("api_key", "admin_key")
+        
+    @property
+    def build_interval(self):
+        """Timeout in seconds to use when connecting via ssh."""
+        return float(self.get("build_interval", 10))
 
     @property
     def ssh_timeout(self):
