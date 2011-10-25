@@ -1,18 +1,60 @@
 import httplib2
+import json
 
 class RestClient(object):
     
-    def __init__(self, user, key, auth_url, base_url = None):
-        self.user = user
-        self.key = key
-        self.auth_url = auth_url
-        self.token, self.base_url = self.authenticate(user, key) 
+    def __init__(self, user, key, auth_url, tenant_name, base_url = None):
         
-    def authenticate(self, user, api_key):        
+        self.token, self.base_url = self.authenticate(user, key, auth_url, tenant_name)
+        
+    def basic_authenticate(self, user, api_key):        
         """
         Provides authenitication for the target API
         """
         
+        params = {}
+        params['headers'] = {'User-Agent': 'Zodiac-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
+
+        self.http_obj = httplib2.Http()
+        resp, body = self.http_obj.request(self.auth_url, 'GET', **params)
+        try:
+            return resp['x-auth-token'], resp['x-server-management-url']
+        except:
+            raise
+            
+    def authenticate(self, user, api_key, auth_url, tenant_name):        
+        """
+        Provides authenitication for the target API
+        """
+        
+        creds = { 'auth' : {
+                'passwordCredentials' : {
+                    'username' : user,
+                    'password' : api_key,
+                },
+                'tenantName': tenant_name
+            }
+        
+        }
+        
+        self.http_obj = httplib2.Http()
+        headers = {'Content-Type': 'application/json'}
+        body = json.dumps(creds)
+        resp, body = self.http_obj.request(auth_url,'POST',headers=headers, body=body)
+        
+        try:
+            auth_data = json.loads(body)['access']
+            token = auth_data['token']['id']
+            mgmt_url = auth_data['serviceCatalog'][0]['endpoints'][0]['publicURL']
+            
+            #TODO (dwalleck): This is a horrible stopgap. Need to join strings more cleanly
+            temp = mgmt_url.rsplit('/')
+            management_url = temp[0] + '//' + temp[2] + '/' + temp[3] + '/' + tenant_name
+            return token, management_url
+        except KeyError:
+            print "Failed to authenticate user"
+            raise
+
         params = {}
         params['headers'] = {'User-Agent': 'Zodiac-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
 

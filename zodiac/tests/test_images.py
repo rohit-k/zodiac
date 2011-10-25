@@ -2,31 +2,48 @@ from nose.plugins.attrib import attr
 from zodiac import openstack
 import unittest2 as unittest
 import zodiac.config
+from zodiac.utils.data_utils import data_gen
 
 class ImagesTest(unittest.TestCase):
     
-    _multiprocess_shared_ = True
-    
     @classmethod
     def setUpClass(cls):
-        cls.os = openstack.Manager()
-        cls.client = cls.os.images_client
-
+        cls.os = openstack.Manager()        
+        cls.servers_client = cls.os.servers_client
+        cls.images_client = cls.os.images_client
+        cls.config = zodiac.config.ZodiacConfig()
+        cls.image_ref = cls.config.env.image_ref
+        cls.flavor_ref = cls.config.env.flavor_ref
+        
+        name = data_gen('server')
+        resp, body = cls.servers_client.create_server(name, cls.image_ref, cls.flavor_ref)
+        cls.id = body['server']['id']
+        cls.servers_client.wait_for_server_status(cls.id, 'ACTIVE')
+        
+        name = data_gen('server')
+        resp, body = cls.images_client.create_image(cls.id, name)
+        cls.image_id = body['image']['id']
+        cls.images_client.wait_for_image_status(cls.image_id)
+        
     @classmethod
     def tearDownClass(cls):
         pass
         
-    def test_create_image(self):
+    def test_create_delete_image(self):
         """ An image of the given server should be created """
-        pass
+        name = data_gen('image')
+        resp, body = self.images_client.create_image(self.id, name)
+        image_id = body['image']['id']
+        self.images_client.wait_for_image_status(image_id)
+        
+        resp, body = self.images_client.get_image(image_id)
+        self.assertEqual(name, body['image']['name'])
+        
+        self.images_client.delete
         
     def test_get_image_details(self):
         """ The full details of the image are returned """
-        self.client.get_image_details(2)
-        
-    def test_delete_image(self):
-        """ The given image should be deleted """
-        pass
+        self.client.get_image_details(self.image_id)
         
     def test_list_images(self):
         """ A list of all valid images should be returned """

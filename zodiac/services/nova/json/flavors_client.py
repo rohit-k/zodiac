@@ -4,8 +4,8 @@ import time
 
 class FlavorsClient(object):
 
-    def __init__(self, username, key, auth_url):
-        self.client = rest_client.RestClient(username, key, auth_url)
+    def __init__(self, username, key, auth_url, tenant_name):
+        self.client = rest_client.RestClient(username, key, auth_url, tenant_name)
         
     def list_flavors(self, params=None):
         url = 'flavors'

@@ -2,10 +2,9 @@ from nose.plugins.attrib import attr
 from zodiac import openstack
 import unittest2 as unittest
 import zodiac.config
+from zodiac.utils.data_utils import data_gen
 
 class ServersTest(unittest.TestCase):
-    
-    _multiprocess_shared_ = True
     
     @classmethod
     def setUpClass(cls):
@@ -20,7 +19,8 @@ class ServersTest(unittest.TestCase):
         meta = { 'hello' : 'world' }
         accessIPv4 = '1.1.1.1'
         accessIPv6 = '::babe:220.12.22.2'
-        resp, server = self.client.create_server('clienttest', 
+        name = data_gen('server')
+        resp, server = self.client.create_server(name, 
                                                  self.image_ref, 
                                                  self.flavor_ref, 
                                                  meta=meta, 
@@ -33,7 +33,7 @@ class ServersTest(unittest.TestCase):
         server = body['server']
         self.assertEqual('1.1.1.1', server['accessIPv4'])
         self.assertEqual('::babe:220.12.22.2', server['accessIPv6'])
-        self.assertEqual('clienttest', server['name'])
+        self.assertEqual(name, server['name'])
         self.assertEqual(self.image_ref, server['image']['id'])
         self.assertEqual(self.flavor_ref, server['flavor']['id'])
         
@@ -52,7 +52,10 @@ class ServersTest(unittest.TestCase):
         If an admin password is provided on server creation, the server's root
         password should be set to that password.
         """
-        resp, body = self.client.create_server('clienttest', 6, 1, adminPass='testpassword')
+        
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, self.image_ref, 
+                                               self.flavor_ref, adminPass='testpassword')
         
         server = body['server']
         self.assertEqual('testpassword', server['adminPass'])
@@ -73,7 +76,9 @@ class ServersTest(unittest.TestCase):
     @attr(type='smoke')
     def test_update_server_name(self):
         """ The server name should be changed to the the provided value """
-        resp, body = self.client.create_server('clienttest', self.image_ref, self.flavor_ref)
+        
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, self.image_ref, self.flavor_ref)
         server = body['server']
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         
@@ -89,10 +94,11 @@ class ServersTest(unittest.TestCase):
     def test_update_server_metadata(self):
         """ The provided metadata should be added to the server's metadata """
         meta = { 'hello' : 'world' }
-        resp, body = self.client.create_server('clienttest', 
-                                                 self.image_ref, 
-                                                 self.flavor_ref, 
-                                                 meta=meta)
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, 
+                                               self.image_ref, 
+                                               self.flavor_ref, 
+                                               meta=meta)
         server = body['server']
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
@@ -108,7 +114,8 @@ class ServersTest(unittest.TestCase):
     
     def test_update_access_server_address(self):
         """ The server's access addresses should reflect the provided values """
-        resp, body = self.client.create_server('clienttest', self.image_ref, self.flavor_ref)
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, self.image_ref, self.flavor_ref)
         server = body['server']
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         

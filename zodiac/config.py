@@ -23,6 +23,11 @@ class NovaConfig(object):
     def username(self):
         """Username to use for Nova API requests. Defaults to 'admin'."""
         return self.get("user", "admin")
+        
+    @property
+    def tenant_name(self):
+        """Tenant name to use for Nova API requests. Defaults to 'admin'."""
+        return self.get("tenant_name", "admin")
 
     @property
     def api_key(self):

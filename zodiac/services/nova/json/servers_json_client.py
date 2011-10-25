@@ -5,11 +5,11 @@ import zodiac.config
 
 class ServersClient(object):
 
-    def __init__(self, username, key, auth_url):
-        self.client = rest_client.RestClient(username, key, auth_url)
-        cls.config = zodiac.config.ZodiacConfig()
-        cls.build_interval = self.config.nova.build_interval
-        cls.build_timeout = self.config.nova.build_timeout
+    def __init__(self, username, key, auth_url, tenant_name):
+        self.client = rest_client.RestClient(username, key, auth_url, tenant_name)
+        self.config = zodiac.config.ZodiacConfig()
+        self.build_interval = self.config.nova.build_interval
+        self.build_timeout = self.config.nova.build_timeout
         
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
                       personality = None, accessIPv4 = None, accessIPv6 = None,

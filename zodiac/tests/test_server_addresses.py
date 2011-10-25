@@ -5,15 +5,13 @@ import zodiac.config
 
 class ServerAddressesTest(unittest.TestCase):
     
-    _multiprocess_shared_ = True
-    
     @classmethod
     def setUpClass(cls):
         cls.os = openstack.Manager()
         cls.client = cls.os.servers_client
         
-        resp, server = cls.client.create_server('clienttest', 6, 1)
-        cls.id = server['server']['id']
+        resp, body = cls.client.create_server('clienttest', 6, 1)
+        cls.id = body['server']['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
     @classmethod
