@@ -2,6 +2,7 @@ import json
 import zodiac.common.rest_client as rest_client
 import time
 import zodiac.config
+from zodiac import exceptions
 
 class ServersClient(object):
 
@@ -139,10 +140,10 @@ class ServersClient(object):
             server_status = body['server']['status']
             
             if(server_status == 'ERROR'):
-                raise
+                raise exceptions.BuildErrorException
                 
             if (int(time.time()) - start >= self.build_timeout):
-                raise
+                raise exceptions.TimeoutException
                 
     def list_addresses(self, server_id):
         """Lists all addresses for a server."""

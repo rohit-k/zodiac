@@ -2,6 +2,7 @@ from nose.plugins.attrib import attr
 from zodiac import openstack
 import unittest2 as unittest
 import zodiac.config
+from zodiac.utils.data_utils import data_gen
 
 class ServerActionsTest(unittest.TestCase):
     
@@ -9,6 +10,10 @@ class ServerActionsTest(unittest.TestCase):
     def setUpClass(cls):
         cls.os = openstack.Manager()
         cls.client = cls.os.servers_client
+        cls.config = zodiac.config.ZodiacConfig()
+        cls.image_ref = cls.config.env.image_ref
+        cls.flavor_ref = cls.config.env.flavor_ref
+        
         resp, server = cls.client.create_server('clienttest', 6, 1)
         cls.id = server['server']['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')

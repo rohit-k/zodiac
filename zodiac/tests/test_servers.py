@@ -80,7 +80,7 @@ class ServersTest(unittest.TestCase):
         name = data_gen('server')
         resp, body = self.client.create_server(name, self.image_ref, self.flavor_ref)
         server = body['server']
-        self.client.wait_for_server_status(self.id, 'ACTIVE')
+        self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
         self.client.update_server(server['id'], name='newname')
         self.client.wait_for_server_status(server['id'], 'ACTIVE')

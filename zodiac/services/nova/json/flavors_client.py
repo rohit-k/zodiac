@@ -34,6 +34,6 @@ class FlavorsClient(object):
         return resp, body
         
     def get_flavor_details(self, flavor_id):
-        resp, body = self.client.delete("flavors/%s" % str(flavor_id))
+        resp, body = self.client.get("flavors/%s" % str(flavor_id))
         body = json.loads(body)
         return resp, body

@@ -13,13 +13,15 @@ class ImagesClient(object):
         """
 
         post_body = {
-            'name': name,
+            'createImage' : {
+                'name': name,
+            } 
         }
 
         if meta != None:
             post_body['metadata'] = meta
 
-        post_body = json.dumps({'server': post_body})
+        post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
                                       str(server_id), post_body)
         body = json.loads(body)
@@ -71,10 +73,10 @@ class ImagesClient(object):
             image_status = body['image']['status']
 
             if(image_status == 'ERROR'):
-                raise
+                raise exceptions.TimeoutException
 
             if (int(time.time()) - start >= self.build_timeout):
-                raise
+                raise exceptions.BuildErrorException
         
         
         

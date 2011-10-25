@@ -74,7 +74,7 @@ class EnvironmentConfig(object):
     @property
     def flavor_ref(self):
         """Valid flavorRef to use"""
-        return self.get("flavor_ref", 1)
+        return int(self.get("flavor_ref", 1))
 
     @property
     def flavor_ref_alt(self):

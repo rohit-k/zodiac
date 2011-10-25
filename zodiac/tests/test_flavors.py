@@ -9,6 +9,8 @@ class FlavorsTest(unittest.TestCase):
     def setUpClass(cls):
         cls.os = openstack.Manager()
         cls.client = cls.os.flavors_client
+        cls.config = zodiac.config.ZodiacConfig()
+        cls.flavor_id = cls.config.env.flavor_ref
         
     def test_list_flavors(self):
         self.client.list_flavors()
@@ -31,5 +33,7 @@ class FlavorsTest(unittest.TestCase):
         self.client.list_flavors_with_detail({'minDisk' : '30'})
         
     def test_get_flavor(self):
-        self.client.get_flavor_details(1)
+        resp, body = self.client.get_flavor_details(self.flavor_id)
+        flavor = body['flavor']
+        self.assertEqual(self.flavor_id, flavor['id'])
         
