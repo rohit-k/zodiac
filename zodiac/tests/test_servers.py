@@ -3,6 +3,7 @@ from zodiac import openstack
 import unittest2 as unittest
 import zodiac.config
 from zodiac.utils.data_utils import data_gen
+from zodiac.common import ssh
 
 class ServersTest(unittest.TestCase):
     
@@ -35,7 +36,7 @@ class ServersTest(unittest.TestCase):
         self.assertEqual('::babe:220.12.22.2', server['accessIPv6'])
         self.assertEqual(name, server['name'])
         self.assertEqual(self.image_ref, server['image']['id'])
-        self.assertEqual(self.flavor_ref, server['flavor']['id'])
+        self.assertEqual(str(self.flavor_ref), server['flavor']['id'])
         
         self.client.delete_server(self.id)
         
@@ -90,7 +91,8 @@ class ServersTest(unittest.TestCase):
         self.assertEqual('newname', server['name'])
         
         self.client.delete_server(self.id)
-        
+    
+    @unittest.skip('May not be valid test case')     
     def test_update_server_metadata(self):
         """ The provided metadata should be added to the server's metadata """
         meta = { 'hello' : 'world' }

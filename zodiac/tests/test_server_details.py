@@ -16,20 +16,26 @@ class ServerDetailsTest(unittest.TestCase):
         cls.image_ref_alt = cls.config.env.image_ref_alt
         cls.flavor_ref_alt = cls.config.env.flavor_ref_alt
         
-        s1_name = data_gen('server')
-        resp, body = cls.client.create_server(s1_name, cls.image_ref, cls.flavor_ref)
+        cls.s1_name = data_gen('server')
+        resp, body = cls.client.create_server(cls.s1_name, cls.image_ref, cls.flavor_ref)
         cls.s1 = body['server']
         cls.client.wait_for_server_status(cls.s1['id'], 'ACTIVE')
         
-        s2_name = data_gen('server')
-        resp, body = cls.client.create_server(s2_name, cls.image_ref_alt, cls.flavor_ref)
+        cls.s2_name = data_gen('server')
+        resp, body = cls.client.create_server(cls.s2_name, cls.image_ref_alt, cls.flavor_ref)
         cls.s2 = body['server']
-        cls.client.wait_for_server_status(s2['id'], 'ACTIVE')
+        cls.client.wait_for_server_status(cls.s2['id'], 'ACTIVE')
         
-        s3_name = data_gen('server')
-        resp, body = cls.client.create_server(s3_name, cls.image_ref, cls.flavor_ref_alt)
+        cls.s3_name = data_gen('server')
+        resp, body = cls.client.create_server(cls.s3_name, cls.image_ref, cls.flavor_ref_alt)
         cls.s3 = body['server']
-        cls.client.wait_for_server_status(s3['id'], 'ACTIVE')
+        cls.client.wait_for_server_status(cls.s3['id'], 'ACTIVE')
+        
+    @classmethod
+    def tearDownClass(cls):
+        cls.client.delete_server(cls.s1['id'])
+        cls.client.delete_server(cls.s2['id'])
+        cls.client.delete_server(cls.s3['id'])
     
     def test_list_servers(self):
         """ All servers for the tenant should be returned """
@@ -98,8 +104,8 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_list_servers_detailed_filter_by_server_name(self):
         """ Filter the detailed list of servers by server name """
-        params = {'name' : s1_name}
-        self.client.list_servers_with_detail(params)
+        params = {'name' : self.s1_name}
+        resp, body = self.client.list_servers_with_detail(params)
         servers = body['servers']
         
         self.assertTrue(self.s1 in servers)
@@ -109,7 +115,8 @@ class ServerDetailsTest(unittest.TestCase):
     def test_list_servers_detailed_filter_by_server_status(self):
         """ Filter the detailed list of servers by server status """
         params = {'status' : 'active'}
-        self.client.list_servers_with_detail(params)
+        resp, body = self.client.list_servers_with_detail(params)
+        servers = body['servers']
         
         self.assertTrue(self.s1 in servers)
         self.assertTrue(self.s2 in servers)
