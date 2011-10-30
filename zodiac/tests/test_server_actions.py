@@ -12,9 +12,11 @@ class ServerActionsTest(unittest.TestCase):
         cls.client = cls.os.servers_client
         cls.config = zodiac.config.ZodiacConfig()
         cls.image_ref = cls.config.env.image_ref
+        cls.image_ref_alt = cls.config.env.image_ref_alt
         cls.flavor_ref = cls.config.env.flavor_ref
         
-        resp, server = cls.client.create_server('clienttest', 6, 1)
+        cls.name = data_gen('server')
+        resp, server = cls.client.create_server(cls.name, cls.image_ref, cls.flavor_ref)
         cls.id = server['server']['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
@@ -28,14 +30,6 @@ class ServerActionsTest(unittest.TestCase):
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         
         #TODO: SSH in to verify the new password works
-        
-    def test_server_password_complexity_not_met(self):
-        """ 
-        If the provided password does not meet the image's server requirements,
-        The request should fail
-        """
-        
-        pass
         
     def test_reboot_server_hard(self):
         """ The server should be power cycled """
@@ -54,16 +48,12 @@ class ServerActionsTest(unittest.TestCase):
     def test_rebuild_server(self):
         """ The server should be rebuilt using the provided image """
         
-        self.client.rebuild(self.id, 'rebuiltserver', 3)
+        self.client.rebuild(self.id, self.image_ref_alt, 'rebuiltserver')
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         resp, server = self.client.get_server(self.id)
-        self.assertEqual('3', server['server']['image']['id'])
+        self.assertEqual(self.image_ref_alt, server['server']['image']['id'])
         
         #All IPs should be the same, server ref should be the same
-    
-    def test_rebuild_with_new_name(self):
-        """ The system should be rebuilt with the given image and name """
-        pass
         
     def test_rebuild_with_metadata(self):
         """ 

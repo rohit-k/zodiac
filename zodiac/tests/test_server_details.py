@@ -49,7 +49,7 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_list_servers_filter_by_image(self):
         """ Filter the list of servers by image """
-        params = {'imageRef' : self.image_ref}
+        params = {'image' : self.image_ref}
         resp, body = self.client.list_servers(params)
         servers = body['servers']
         
@@ -59,7 +59,7 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_list_servers_filter_by_flavor(self):
         """ Filter the list of servers by flavor """
-        params = {'flavorId' : 1}
+        params = {'flavor' : 1}
         self.client.list_servers(params)  
 
     def test_list_servers_filter_by_server_name(self):
@@ -70,11 +70,11 @@ class ServerDetailsTest(unittest.TestCase):
     def test_list_servers_filter_by_server_status(self):
         """ Filter the list of servers by server status """
         params = {'status' : 'active'}
-        self.client.list_servers(params)    
+        resp, body = self.client.list_servers(params)    
 
     def test_list_servers_with_detail(self):
         """ Return a detailed list of all servers """
-        self.client.list_servers_with_detail()
+        resp, body=  self.client.list_servers_with_detail()
         servers = body['servers']
         
         self.assertTrue(self.s1 in servers)
@@ -83,7 +83,7 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_list_servers_detailed_filter_by_image(self):
         """ Filter the detailed list of servers by image """
-        params = {'imageRef' : self.image_ref}
+        params = {'image' : self.image_ref}
         resp, body = self.client.list_servers_with_detail(params)
         servers = body['servers']
         
@@ -93,7 +93,7 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_list_servers_detailed_filter_by_flavor(self):
         """ Filter the detailed list of servers by flavor """
-        params = {'flavorRef' : self.flavor_ref_alt}
+        params = {'flavor' : self.flavor_ref_alt}
         resp, body = self.client.list_servers_with_detail(params)  
         servers = body['servers']
         
@@ -118,6 +118,7 @@ class ServerDetailsTest(unittest.TestCase):
         resp, body = self.client.list_servers_with_detail(params)
         servers = body['servers']
         
+        
         self.assertTrue(self.s1 in servers)
         self.assertTrue(self.s2 in servers)
         self.assertTrue(self.s3 in servers)
@@ -129,4 +130,4 @@ class ServerDetailsTest(unittest.TestCase):
         
         self.assertEqual(self.s1_name, server['name'])
         self.assertEqual(self.image_ref, server['image']['id'])
-        self.assertEqual(self.flavor_ref, server['flavor']['id'])
+        self.assertEqual(str(self.flavor_ref), server['flavor']['id'])
