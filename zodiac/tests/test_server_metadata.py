@@ -13,6 +13,14 @@ class ServerMetadataTest(unittest.TestCase):
         cls.config = zodiac.config.ZodiacConfig()
         cls.image_ref = cls.config.env.image_ref
         cls.flavor_ref = cls.config.env.flavor_ref
+        
+        cls.meta = { 'test1' : 'value1', 'test2' : 'value2' }
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, cls.image_ref, cls.flavor_ref, cls=meta)
+        
+        #Wait for the server to become active
+        server = body['server']
+        self.client.wait_for_server_status(server['id'], 'ACTIVE')
 
     @classmethod
     def tearDownClass(cls):
@@ -24,7 +32,12 @@ class ServerMetadataTest(unittest.TestCase):
         exceeds the compute provider's limit, the request should fail 
         """
         
-        pass
+        meta = { 'key1' : 'value1', 'key2' : 'value2', 'key3' : 'value3',
+                'key4' : 'value4', 'key5' : 'value5', 'key6' : 'value6'}
+        name = data_gen('server')
+        resp, body = self.client.create_server(name, self.image_ref, self.flavor_ref, meta=meta)
+        
+        self.assertEqual('413', resp['status'])
         
     def test_list_server_metadata(self):
         """ All metadata key/value pairs for a server should be returned """

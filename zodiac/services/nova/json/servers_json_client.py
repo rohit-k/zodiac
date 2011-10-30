@@ -118,7 +118,7 @@ class ServersClient(object):
                 param_list.append("%s=%s&" % (param, value))
                 
             url = "servers/detail?" + "".join(param_list)
-        print url
+
         resp, body = self.client.get(url)
         body = json.loads(body)
         return resp, body
