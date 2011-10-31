@@ -15,8 +15,8 @@ class ServerAddressesTest(unittest.TestCase):
         cls.flavor_ref = cls.config.env.flavor_ref
         
         name = data_gen('server')
-        resp, body = cls.client.create_server(name, cls.image_ref, cls.flavor_ref)
-        cls.id = body['server']['id']
+        resp, server = cls.client.create_server(name, cls.image_ref, cls.flavor_ref)
+        cls.id = server['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
     @classmethod

@@ -16,10 +16,9 @@ class ServerMetadataTest(unittest.TestCase):
         
         cls.meta = { 'test1' : 'value1', 'test2' : 'value2' }
         name = data_gen('server')
-        resp, body = self.client.create_server(name, cls.image_ref, cls.flavor_ref, cls=meta)
+        resp, server = cls.client.create_server(name, cls.image_ref, cls.flavor_ref, meta=cls.meta)
         
         #Wait for the server to become active
-        server = body['server']
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
 
     @classmethod
