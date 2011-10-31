@@ -18,17 +18,17 @@ class ServerDetailsTest(unittest.TestCase):
         
         cls.s1_name = data_gen('server')
         resp, body = cls.client.create_server(cls.s1_name, cls.image_ref, cls.flavor_ref)
-        cls.s1 = body['server']
+        cls.s1 = body
         cls.client.wait_for_server_status(cls.s1['id'], 'ACTIVE')
         
         cls.s2_name = data_gen('server')
         resp, body = cls.client.create_server(cls.s2_name, cls.image_ref_alt, cls.flavor_ref)
-        cls.s2 = body['server']
+        cls.s2 = body
         cls.client.wait_for_server_status(cls.s2['id'], 'ACTIVE')
         
         cls.s3_name = data_gen('server')
         resp, body = cls.client.create_server(cls.s3_name, cls.image_ref, cls.flavor_ref_alt)
-        cls.s3 = body['server']
+        cls.s3 = body
         cls.client.wait_for_server_status(cls.s3['id'], 'ACTIVE')
         
     @classmethod
@@ -125,8 +125,7 @@ class ServerDetailsTest(unittest.TestCase):
 
     def test_get_server_details(self):
         """ Return the full details of a single server """
-        resp, body = self.client.get_server(self.s1['id'])
-        server = body['server']
+        resp, server = self.client.get_server(self.s1['id'])
         
         self.assertEqual(self.s1_name, server['name'])
         self.assertEqual(self.image_ref, server['image']['id'])

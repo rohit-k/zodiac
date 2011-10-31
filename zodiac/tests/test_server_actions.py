@@ -17,7 +17,7 @@ class ServerActionsTest(unittest.TestCase):
         
         cls.name = data_gen('server')
         resp, server = cls.client.create_server(cls.name, cls.image_ref, cls.flavor_ref)
-        cls.id = server['server']['id']
+        cls.id = server['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
     @classmethod
@@ -51,7 +51,7 @@ class ServerActionsTest(unittest.TestCase):
         self.client.rebuild(self.id, self.image_ref_alt, 'rebuiltserver')
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         resp, server = self.client.get_server(self.id)
-        self.assertEqual(self.image_ref_alt, server['server']['image']['id'])
+        self.assertEqual(self.image_ref_alt, server['image']['id'])
         
         #All IPs should be the same, server ref should be the same
         
@@ -74,7 +74,7 @@ class ServerActionsTest(unittest.TestCase):
         self.client.wait_for_server_status(self.id, 'ACTIVE')
         
         resp, server = self.client.get_server(self.id)
-        self.assertEqual('3', server['server']['flavor']['id'])
+        self.assertEqual('3', server['flavor']['id'])
         
     def test_resize_server_revert(self):
         """ 
@@ -83,7 +83,7 @@ class ServerActionsTest(unittest.TestCase):
         """
         
         resp, server = self.client.create_server('clienttest', 6, 1)
-        id = server['server']['id']
+        id = server['id']
         self.client.wait_for_server_status(id, 'ACTIVE')
         
         self.client.resize(id, 2)
@@ -93,7 +93,7 @@ class ServerActionsTest(unittest.TestCase):
         self.client.wait_for_server_status(id, 'ACTIVE')
         
         resp, server = self.client.get_server(id)
-        self.assertEqual('1', server['server']['flavor']['id'])
+        self.assertEqual('1', server['flavor']['id'])
         
         self.client.delete_server(id)
     

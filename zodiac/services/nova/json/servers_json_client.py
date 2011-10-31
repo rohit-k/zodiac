@@ -11,6 +11,7 @@ class ServersClient(object):
         self.config = zodiac.config.ZodiacConfig()
         self.build_interval = self.config.nova.build_interval
         self.build_timeout = self.config.nova.build_timeout
+        self.headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
         
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
                       personality = None, accessIPv4 = None, accessIPv6 = None,
@@ -48,9 +49,9 @@ class ServersClient(object):
             post_body['accessIPv6'] = accessIPv6
         
         post_body = json.dumps({'server': post_body})
-        resp, body = self.client.post('servers', post_body)
+        resp, body = self.client.post('servers', post_body, self.headers)
         body = json.loads(body)
-        return resp, body
+        return resp, body['server']
         
     def update_server(self, server_id, name = None, meta = None, accessIPv4 = None, 
                       accessIPv6 = None):
@@ -79,15 +80,15 @@ class ServersClient(object):
             post_body['accessIPv6'] = accessIPv6
         
         post_body = json.dumps({'server': post_body})
-        resp, body = self.client.put("servers/%s" % str(server_id), post_body)
+        resp, body = self.client.put("servers/%s" % str(server_id), post_body, self.headers)
         body = json.loads(body)
-        return resp, body
+        return resp, body['server']
         
     def get_server(self, server_id):
         """Returns the properties of an existing server."""
         resp, body = self.client.get("servers/%s" % str(server_id))
         body = json.loads(body)
-        return resp, body
+        return resp, body['server']
         
     def delete_server(self, server_id):
         """Deletes the given server."""
@@ -126,13 +127,13 @@ class ServersClient(object):
     def wait_for_server_status(self, server_id, status):
         """Waits for a server to reach a given status."""
         resp, body = self.get_server(server_id)
-        server_status = body['server']['status']
+        server_status = body['status']
         start = int(time.time())
         
         while(server_status != status):
             time.sleep(self.build_interval)
             resp, body = self.get_server(server_id)
-            server_status = body['server']['status']
+            server_status = body['status']
             
             if(server_status == 'ERROR'):
                 raise exceptions.BuildErrorException
@@ -144,7 +145,7 @@ class ServersClient(object):
         """Lists all addresses for a server."""
         resp, body = self.client.get("servers/%s/ips" % str(server_id))
         body = json.loads(body)
-        return resp, body
+        return resp, body['addresses']
         
     def list_addresses_by_network(self, server_id, network_id):
         """Lists all addresses of a specific network type for a server."""
@@ -162,7 +163,7 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        return self.client.post('servers/%s/action' % str(server_id), post_body)
+        return self.client.post('servers/%s/action' % str(server_id), post_body, self.headers)
         
     def reboot(self, server_id, reboot_type):
         """Reboots a server."""
@@ -173,7 +174,7 @@ class ServersClient(object):
         }
         
         post_body = json.dumps(post_body)
-        return self.client.post('servers/%s/action' % str(server_id), post_body)
+        return self.client.post('servers/%s/action' % str(server_id), post_body, self.headers)
 
         
     def rebuild(self, server_id, image_ref, name = None):
@@ -189,7 +190,7 @@ class ServersClient(object):
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' 
-                                      % str(server_id), post_body)
+                                      % str(server_id), post_body, self.headers)
         body = json.loads(body)
         return resp, body
         
@@ -203,7 +204,7 @@ class ServersClient(object):
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
-                                      str(server_id), post_body)
+                                      str(server_id), post_body, self.headers)
         return resp, body
     
     def confirm_resize(self, server_id):
@@ -214,7 +215,7 @@ class ServersClient(object):
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
-                                      str(server_id), post_body)
+                                      str(server_id), post_body, self.headers)
         return resp, body
     
     def revert_resize(self, server_id):
@@ -225,7 +226,7 @@ class ServersClient(object):
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
-                                      str(server_id), post_body)
+                                      str(server_id), post_body, self.headers)
         return resp, body
         
     def create_image(self, server_id, image_name):
@@ -238,7 +239,7 @@ class ServersClient(object):
         
         post_body = json.dumps(post_body)
         resp, body = self.client.post('servers/%s/action' % 
-                                      str(server_id), post_body)
+                                      str(server_id), post_body, self.headers)
         body = json.loads(body)
         return resp, body
             
