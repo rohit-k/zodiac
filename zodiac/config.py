@@ -15,8 +15,8 @@ class NovaConfig(object):
             return default_value
 
     @property
-    def host(self):
-        """Host for the Nova HTTP API. Defaults to 127.0.0.1."""
+    def auth_url(self):
+        """URL used to authenticate. Defaults to 127.0.0.1."""
         return self.get("host", "127.0.0.1")
 
     @property
@@ -36,7 +36,7 @@ class NovaConfig(object):
         
     @property
     def build_interval(self):
-        """Timeout in seconds to use when connecting via ssh."""
+        """Time in seconds between build status checks."""
         return float(self.get("build_interval", 10))
 
     @property
@@ -46,7 +46,7 @@ class NovaConfig(object):
 
     @property
     def build_timeout(self):
-        """Timeout in seconds to use when connecting via ssh."""
+        """Timeout in seconds to wait for an entity to build."""
         return float(self.get("build_timeout", 300))
 
 

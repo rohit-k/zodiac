@@ -15,7 +15,8 @@ class ServerAddressesTest(unittest.TestCase):
         cls.flavor_ref = cls.config.env.flavor_ref
         
         name = data_gen('server')
-        resp, server = cls.client.create_server(name, cls.image_ref, cls.flavor_ref)
+        resp, server = cls.client.create_server(name, cls.image_ref, 
+                                                cls.flavor_ref)
         cls.id = server['id']
         cls.client.wait_for_server_status(cls.id, 'ACTIVE')
 
@@ -23,7 +24,7 @@ class ServerAddressesTest(unittest.TestCase):
     def tearDownClass(cls):
         cls.client.delete_server(cls.id)
         
-    @attr(type='positive')
+    @attr(type='smoke')
     def test_list_addresses(self):
         """ All public and private addresses for a server should be returned """
         
@@ -31,14 +32,17 @@ class ServerAddressesTest(unittest.TestCase):
         self.assertTrue(addresses['public'][0]['addr'] != '')
         self.assertTrue(addresses['public'][1]['addr'] != '')
         self.assertTrue(addresses['private'][0]['addr'] != '')
-        
+    
+    @attr(type='smoke')    
     def test_list_addresses_by_network(self):
         """ Providing a network type should filter the addresses return by that type """
         
-        resp, addresses = self.client.list_addresses_by_network(self.id, 'public')
+        resp, addresses = self.client.list_addresses_by_network(self.id, 
+                                                                'public')
         self.assertTrue(addresses['public'][0]['addr'] != '')
         self.assertTrue(addresses['public'][1]['addr'] != '')
         
-        resp, addresses = self.client.list_addresses_by_network(self.id, 'private')
+        resp, addresses = self.client.list_addresses_by_network(self.id,
+                                                                'private')
         self.assertTrue(addresses['private'][0]['addr'] != '')
         

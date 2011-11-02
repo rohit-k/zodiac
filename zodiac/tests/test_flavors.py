@@ -11,29 +11,27 @@ class FlavorsTest(unittest.TestCase):
         cls.client = cls.os.flavors_client
         cls.config = zodiac.config.ZodiacConfig()
         cls.flavor_id = cls.config.env.flavor_ref
-        
+    
+    @attr(type='smoke')    
     def test_list_flavors(self):
-        self.client.list_flavors()
+        """ List of all flavors should contain the expected flavor """
+        resp, body = self.client.list_flavors()
+        flavors = body['flavors']
         
+        resp, flavor = self.client.get_flavor_details(self.flavor_id)
+        flavor_min_detail = {'id' : flavor['id'], 'links' : flavor['links'], 'name' : flavor['name']}
+        self.assertTrue(flavor_min_detail in flavors)
+    
+    @attr(type='smoke')    
     def test_list_flavors_with_detail(self):
-        self.client.list_flavors_with_detail()
-        
-    def test_list_flavors_limit_by_min_ram(self):
-        self.client.list_flavors({'minRam' : '512'})
-        
-    def test_list_flavors_limit_by_min_disk(self):
-        """ The list of flavors should be filtered by their minimum disk requirement """
-        self.client.list_flavors({'minDisk' : '30'})
-        
-    def test_list_flavors_detailed_limit_by_min_ram(self):
-        self.client.list_flavors_with_detail({'minRam' : '512'})
-
-    def test_list_flavors_detailed_limit_by_min_disk(self):
-        """ The list of flavors should be filtered by their minimum disk requirement """
-        self.client.list_flavors_with_detail({'minDisk' : '30'})
-        
+        """ Detailed list of all flavors should contain the expected flavor """
+        resp, body = self.client.list_flavors_with_detail()
+        flavors = body['flavors']
+        resp, flavor = self.client.get_flavor_details(self.flavor_id)
+        self.assertTrue(flavor in flavors)
+    
+    @attr(type='smoke')            
     def test_get_flavor(self):
-        resp, body = self.client.get_flavor_details(self.flavor_id)
-        flavor = body['flavor']
+        """ The expected flavor details should be returned """
+        resp, flavor = self.client.get_flavor_details(self.flavor_id)
         self.assertEqual(self.flavor_id, flavor['id'])
-        

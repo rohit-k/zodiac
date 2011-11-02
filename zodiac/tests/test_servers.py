@@ -47,7 +47,8 @@ class ServersTest(unittest.TestCase):
         
         #Teardown
         self.client.delete_server(self.id)
-        
+    
+    @attr(type='smoke')    
     def test_create_server_with_admin_password(self):
         """ 
         If an admin password is provided on server creation, the server's root
@@ -56,7 +57,8 @@ class ServersTest(unittest.TestCase):
         
         name = data_gen('server')
         resp, server = self.client.create_server(name, self.image_ref, 
-                                               self.flavor_ref, adminPass='testpassword')
+                                                 self.flavor_ref, 
+                                                 adminPass='testpassword')
         
         #Verify the password is set correctly in the response
         self.assertEqual('testpassword', server['adminPass'])
@@ -65,21 +67,18 @@ class ServersTest(unittest.TestCase):
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         resp, addresses = self.client.list_addresses(server['id'])
         ip = addresses['public'][0]['addr']
-        #client = ssh.Client(ip, 'root', 'testpassword', self.ssh_timeout)
-        #self.assertTrue(client.test_connection_auth())
+        client = ssh.Client(ip, 'root', 'testpassword', self.ssh_timeout)
+        self.assertTrue(client.test_connection_auth())
         
         #Teardown
         self.client.delete_server(server['id'])
-        
-    def test_create_server_with_personality(self):
-        """ The server should be created and the provided file injected """
-        #TODO: Check file permissions/group/etc
-        pass
     
+    @attr(type='smoke')
     def test_update_server_name(self):
         """ The server name should be changed to the the provided value """
         name = data_gen('server')
-        resp, server = self.client.create_server(name, self.image_ref, self.flavor_ref)
+        resp, server = self.client.create_server(name, self.image_ref, 
+                                                 self.flavor_ref)
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
         #Update the server with a new name
@@ -93,14 +92,17 @@ class ServersTest(unittest.TestCase):
         #Teardown
         self.client.delete_server(server['id'])
     
+    @attr(type='smoke')
     def test_update_access_server_address(self):
         """ The server's access addresses should reflect the provided values """
         name = data_gen('server')
-        resp, server = self.client.create_server(name, self.image_ref, self.flavor_ref)
+        resp, server = self.client.create_server(name, self.image_ref, 
+                                                 self.flavor_ref)
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
         #Update the IPv4 and IPv6 access addresses
-        self.client.update_server(server['id'], accessIPv4='1.1.1.1', accessIPv6='::babe:2.2.2.2')
+        self.client.update_server(server['id'], accessIPv4='1.1.1.1', 
+                                  accessIPv6='::babe:2.2.2.2')
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
         #Verify the access addresses have been updated

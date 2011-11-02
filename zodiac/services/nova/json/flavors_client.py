@@ -36,4 +36,4 @@ class FlavorsClient(object):
     def get_flavor_details(self, flavor_id):
         resp, body = self.client.get("flavors/%s" % str(flavor_id))
         body = json.loads(body)
-        return resp, body
+        return resp, body['flavor']

@@ -12,29 +12,30 @@ class ImagesTest(unittest.TestCase):
         cls.client = cls.os.images_client
         cls.config = zodiac.config.ZodiacConfig()
         cls.image_id = cls.config.env.image_ref
-        
-    @classmethod
-    def tearDownClass(cls):
-        pass
     
     @unittest.skip('Not currently enabled')     
     def test_create_delete_image(self):
+        """ An image for the provided server should be created """
         name = data_gen('image')
-        resp, body = self.images_client.create_image(self.id, name)
+        resp, body = self.client.create_image(self.id, name)
         image_id = body['image']['id']
         self.images_client.wait_for_image_status(image_id)
         
+        #Verify the image was created correctly
         resp, body = self.images_client.get_image(image_id)
         self.assertEqual(name, body['image']['name'])
         
-        self.images_client.delete
-        
+        #Teardown
+        self.images_client.delete()
+    
+    @attr(type='smoke')    
     def test_get_image_details(self):
-        resp, body = self.client.get_image_details(self.image_id)
-        image = body['image']
+        resp, image = self.client.get_image(self.image_id)
         self.assertEqual(self.image_id, image['id'])
-        
+    
+    @attr(type='smoke')    
     def test_list_images(self):
+        """ The list of all images should contain the image flavor """
         resp, body = self.client.list_images()
         images = body['images']
         
@@ -45,8 +46,9 @@ class ImagesTest(unittest.TestCase):
         
         self.assertTrue(found)
         
-        
+    @attr(type='smoke')    
     def test_list_images_with_detail(self):
+        """ Detailed list of all images should contain the expected image """
         resp, body = self.client.list_images_with_detail()
         images = body['images']
         
@@ -55,27 +57,3 @@ class ImagesTest(unittest.TestCase):
             if image['id'] == self.image_id:
                 found = True
         self.assertTrue(found)
-        
-    def test_list_images_filter_by_type(self):
-        resp, body = self.client.list_images({'type' : 'BASE'})
-    
-    def test_list_images_filter_by_name(self):
-        self.client.list_images({'name' : 'Ubuntu'})
-        
-    def test_list_images_filter_by_server_ref(self):
-        self.client.list_images({'serverRef' : self.image_id})
-        
-    def test_list_images_filter_by_status(self):
-        self.client.list_images({'status' : 'active'})
-        
-    def test_list_images_detailed_filter_by_status(self):
-        self.client.list_images_with_detail({'status' : 'active'})
-        
-    def test_list_images_detailed_filter_by_type(self):
-        self.client.list_images_with_detail({'type' : 'BASE'})
-
-    def test_list_images_detailed_filter_by_name(self):
-        self.client.list_images_with_detail({'name' : 'Fedora'})
-
-    def test_list_images_detailed_filter_by_server_ref(self):
-        self.client.list_images_with_detail({'serverRef' : self.image_id})

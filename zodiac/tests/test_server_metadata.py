@@ -16,14 +16,11 @@ class ServerMetadataTest(unittest.TestCase):
         
         cls.meta = { 'test1' : 'value1', 'test2' : 'value2' }
         name = data_gen('server')
-        resp, server = cls.client.create_server(name, cls.image_ref, cls.flavor_ref, meta=cls.meta)
+        resp, server = cls.client.create_server(name, cls.image_ref, 
+                                                cls.flavor_ref, meta=cls.meta)
         
         #Wait for the server to become active
-        self.client.wait_for_server_status(server['id'], 'ACTIVE')
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
+        cls.client.wait_for_server_status(server['id'], 'ACTIVE')
         
     def test_exceed_server_metadata_limit_on_create(self):
         """ 
@@ -34,7 +31,8 @@ class ServerMetadataTest(unittest.TestCase):
         meta = { 'key1' : 'value1', 'key2' : 'value2', 'key3' : 'value3',
                 'key4' : 'value4', 'key5' : 'value5', 'key6' : 'value6'}
         name = data_gen('server')
-        resp, body = self.client.create_server(name, self.image_ref, self.flavor_ref, meta=meta)
+        resp, body = self.client.create_server(name, self.image_ref, 
+                                               self.flavor_ref, meta=meta)
         
         self.assertEqual('413', resp['status'])
         

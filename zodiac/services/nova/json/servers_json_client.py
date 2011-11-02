@@ -177,21 +177,30 @@ class ServersClient(object):
         return self.client.post('servers/%s/action' % str(server_id), post_body, self.headers)
 
         
-    def rebuild(self, server_id, image_ref, name = None):
+    def rebuild(self, server_id, image_ref, name=None, meta=None, personality=None, adminPass=None):
         """Rebuilds a server with a new image."""
         post_body = {
-            'rebuild' : {
                 'imageRef' : image_ref,
-            }
         }
         
         if name != None:
             post_body['name'] = name
+            
+        if adminPass != None:
+            post_body['adminPass'] = adminPass
+            
+        if meta != None:
+            post_body['metadata'] = meta
+            
+        if personality != None:
+            post_body['personality'] = personality
         
-        post_body = json.dumps(post_body)
+        post_body = json.dumps({'rebuild' : post_body})
+        print post_body
         resp, body = self.client.post('servers/%s/action' 
                                       % str(server_id), post_body, self.headers)
         body = json.loads(body)
+        print body
         return resp, body
         
     def resize(self, server_id, flavor_ref):

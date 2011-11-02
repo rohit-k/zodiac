@@ -53,10 +53,10 @@ class ImagesClient(object):
         body = json.loads(body)
         return resp, body
         
-    def get_image_details(self, image_id):
+    def get_image(self, image_id):
         resp, body = self.client.get("images/%s" % str(image_id))
         body = json.loads(body)
-        return resp, body
+        return resp, body['image']
         
     def delete_image(self, image_id):
         return self.client.delete("images/%s" % str(image_id))
