@@ -17,7 +17,7 @@ class NovaConfig(object):
     @property
     def auth_url(self):
         """URL used to authenticate. Defaults to 127.0.0.1."""
-        return self.get("host", "127.0.0.1")
+        return self.get("auth_url", "127.0.0.1")
 
     @property
     def username(self):
@@ -82,9 +82,14 @@ class EnvironmentConfig(object):
         return self.get("flavor_ref_alt", 2)
 
     @property
-    def multi_node(self):
-        """ Does the test environment have more than one compute node """
-        return self.get("multi_node", 'false') != 'false'
+    def resize_available(self):
+        """ Does the test environment support resizing """
+        return self.get("resize_available", 'false') != 'false'
+
+    @property
+    def create_image_enabled(self):
+        """ Does the test environment support resizing """
+        return self.get("create_image_enabled", 'false') != 'false'
 
 
 class ZodiacConfig(object):

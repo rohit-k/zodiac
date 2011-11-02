@@ -88,7 +88,6 @@ class ServerDetailsTest(unittest.TestCase):
         self.assertTrue(self.s2 in servers)
         self.assertTrue(self.s3 in servers)
 
-    @unittest.skip('Not currently enabled')
     def test_list_servers_detailed_filter_by_image(self):
         """ Filter the detailed list of servers by image """
         params = {'image' : self.image_ref}
@@ -98,7 +97,7 @@ class ServerDetailsTest(unittest.TestCase):
         self.assertTrue(self.s1 in servers)
         self.assertTrue(self.s2 not in servers)
         self.assertTrue(self.s3 in servers)
-    @unittest.skip('Not currently enabled')
+
     def test_list_servers_detailed_filter_by_flavor(self):
         """ Filter the detailed list of servers by flavor """
         params = {'flavor' : self.flavor_ref_alt}
@@ -109,7 +108,6 @@ class ServerDetailsTest(unittest.TestCase):
         self.assertTrue(self.s2 not in servers)
         self.assertTrue(self.s3 in servers)
           
-    @unittest.skip('Not currently enabled')
     def test_list_servers_detailed_filter_by_server_name(self):
         """ Filter the detailed list of servers by server name """
         params = {'name' : self.s1_name}
@@ -120,7 +118,6 @@ class ServerDetailsTest(unittest.TestCase):
         self.assertTrue(self.s2 not in servers)
         self.assertTrue(self.s3 not in servers)
         
-    @unittest.skip('Not currently enabled')
     def test_list_servers_detailed_filter_by_server_status(self):
         """ Filter the detailed list of servers by server status """
         params = {'status' : 'active'}
@@ -131,7 +128,6 @@ class ServerDetailsTest(unittest.TestCase):
         self.assertTrue(self.s2 in servers)
         self.assertTrue(self.s3 in servers)
 
-    @unittest.skip('Not currently enabled')
     def test_get_server_details(self):
         """ Return the full details of a single server """
         resp, server = self.client.get_server(self.s1['id'])

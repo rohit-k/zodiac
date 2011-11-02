@@ -6,6 +6,8 @@ from zodiac.utils.data_utils import data_gen
 
 class ImagesTest(unittest.TestCase):
     
+    create_image_enabled = zodiac.config.ZodiacConfig().env.create_image_enabled
+    
     @classmethod
     def setUpClass(cls):
         cls.os = openstack.Manager()        
@@ -13,7 +15,7 @@ class ImagesTest(unittest.TestCase):
         cls.config = zodiac.config.ZodiacConfig()
         cls.image_id = cls.config.env.image_ref
     
-    @unittest.skip('Not currently enabled')     
+    @unittest.skipIf(not create_image_enabled, 'Environment unable to create images.')      
     def test_create_delete_image(self):
         """ An image for the provided server should be created """
         name = data_gen('image')
