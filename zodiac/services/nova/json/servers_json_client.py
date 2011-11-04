@@ -6,8 +6,9 @@ from zodiac import exceptions
 
 class ServersClient(object):
 
-    def __init__(self, username, key, auth_url, tenant_name):
-        self.client = rest_client.RestClient(username, key, auth_url, tenant_name)
+    def __init__(self, username, key, auth_url, tenant_name=None):
+        self.client = rest_client.RestClient(username, key, 
+                                             auth_url, tenant_name)
         self.config = zodiac.config.ZodiacConfig()
         self.build_interval = self.config.nova.build_interval
         self.build_timeout = self.config.nova.build_timeout

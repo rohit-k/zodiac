@@ -90,6 +90,11 @@ class EnvironmentConfig(object):
     def create_image_enabled(self):
         """ Does the test environment support resizing """
         return self.get("create_image_enabled", 'false') != 'false'
+        
+    @property
+    def authentication(self):
+        """ What auth method does the environment use (basic|keystone) """
+        return self.get("authentication", 'keystone')
 
 
 class ZodiacConfig(object):

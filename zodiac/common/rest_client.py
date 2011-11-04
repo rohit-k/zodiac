@@ -1,11 +1,21 @@
 import httplib2
 import json
+import zodiac.config
 
 class RestClient(object):
     
-    def __init__(self, user, key, auth_url, tenant_name, base_url = None):
+    def __init__(self, user, key, auth_url, tenant_name=None):
+        self.config = zodiac.config.ZodiacConfig()
         
-        self.token, self.base_url = self.authenticate(user, key, auth_url, tenant_name)
+        if self.config.env.authentication == 'keystone':
+            self.token, self.base_url = self.keystone_authenticate(user, 
+                                                                   key, 
+                                                                   auth_url, 
+                                                                   tenant_name)
+        else:
+            self.token, self.base_url = self.keystone_authenticate(user, 
+                                                                   key, 
+                                                                   auth_url)
         
     def basic_authenticate(self, user, api_key):        
         """
@@ -13,7 +23,7 @@ class RestClient(object):
         """
         
         params = {}
-        params['headers'] = {'User-Agent': 'Zodiac-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
+        params['headers'] = {'User-Agent': 'Test-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
 
         self.http_obj = httplib2.Http()
         resp, body = self.http_obj.request(self.auth_url, 'GET', **params)
@@ -22,9 +32,9 @@ class RestClient(object):
         except:
             raise
             
-    def authenticate(self, user, api_key, auth_url, tenant_name):        
+    def keystone_authenticate(self, user, api_key, auth_url, tenant_name):        
         """
-        Provides authenitication for the target API
+        Provides authenitication via Keystone
         """
         
         creds = { 'auth' : {
