@@ -13,11 +13,11 @@ class RestClient(object):
                                                                    auth_url, 
                                                                    tenant_name)
         else:
-            self.token, self.base_url = self.keystone_authenticate(user, 
-                                                                   key, 
-                                                                   auth_url)
+            self.token, self.base_url = self.basic_authenticate(user, 
+                                                                key, 
+                                                                auth_url)
         
-    def basic_authenticate(self, user, api_key):        
+    def basic_authenticate(self, user, api_key, auth_url):        
         """
         Provides authenitication for the target API
         """
@@ -26,7 +26,7 @@ class RestClient(object):
         params['headers'] = {'User-Agent': 'Test-Client', 'X-Auth-User': user, 'X-Auth-Key': api_key}
 
         self.http_obj = httplib2.Http()
-        resp, body = self.http_obj.request(self.auth_url, 'GET', **params)
+        resp, body = self.http_obj.request(auth_url, 'GET', **params)
         try:
             return resp['x-auth-token'], resp['x-server-management-url']
         except:
