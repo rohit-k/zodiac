@@ -1,6 +1,7 @@
 import httplib2
 import json
 import zodiac.config
+from zodiac import exceptions
 
 class RestClient(object):
     
@@ -88,4 +89,12 @@ class RestClient(object):
         req_url = "%s/%s" % (self.base_url, url)    
         resp, body = self.http_obj.request(req_url, method, headers=headers, body=body)
         
+        if resp.status == 400:
+            body = json.loads(body)
+            raise exceptions.BadRequest(body['badRequest']['message'])
+            
+        if resp.status in (500, 501):
+            body = json.loads(body)
+            raise exceptions.ComputeFault(body['badRequest']['message'])
+            
         return resp, body

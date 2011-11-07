@@ -197,11 +197,9 @@ class ServersClient(object):
             post_body['personality'] = personality
         
         post_body = json.dumps({'rebuild' : post_body})
-        print post_body
         resp, body = self.client.post('servers/%s/action' 
                                       % str(server_id), post_body, self.headers)
         body = json.loads(body)
-        print body
         return resp, body
         
     def resize(self, server_id, flavor_ref):
