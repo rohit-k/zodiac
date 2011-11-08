@@ -17,6 +17,9 @@ class ServersTest(unittest.TestCase):
         cls.flavor_ref = cls.config.env.flavor_ref
         cls.ssh_timeout = cls.config.nova.ssh_timeout
     
+    
+   
+    
     @attr(type='smoke')
     def test_create_delete_server(self):
         meta = { 'hello' : 'world' }
@@ -38,7 +41,7 @@ class ServersTest(unittest.TestCase):
         self.client.wait_for_server_status(server['id'], 'ACTIVE')
         
         #Verify the specified attributes are set correctly
-        resp, server = self.client.get_server(server['id'])
+#        resp, server = self.client.get_server(server['id'])
         self.assertEqual('1.1.1.1', server['accessIPv4'])
         self.assertEqual('::babe:220.12.22.2', server['accessIPv6'])
         self.assertEqual(name, server['name'])
@@ -46,7 +49,8 @@ class ServersTest(unittest.TestCase):
         self.assertEqual(str(self.flavor_ref), server['flavor']['id'])
         
         #Teardown
-        self.client.delete_server(self.id)
+        self.client.delete_server(server['id'])
+    
     
     @attr(type='smoke')    
     def test_create_server_with_admin_password(self):
@@ -72,7 +76,7 @@ class ServersTest(unittest.TestCase):
         
         #Teardown
         self.client.delete_server(server['id'])
-    
+        
     @attr(type='smoke')
     def test_update_server_name(self):
         """ The server name should be changed to the the provided value """
