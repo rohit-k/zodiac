@@ -5,8 +5,9 @@ import zodiac.config
 from zodiac.utils.data_utils import data_gen
 from zodiac.common import ssh
 import base64
+from zodiac.utils.nova_utils import NovaUtils
 
-class ServersTest(unittest.TestCase):
+class TestServersTest(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
@@ -16,9 +17,8 @@ class ServersTest(unittest.TestCase):
         cls.image_ref = cls.config.env.image_ref
         cls.flavor_ref = cls.config.env.flavor_ref
         cls.ssh_timeout = cls.config.nova.ssh_timeout
+        
     
-    
-   
     
     @attr(type='smoke')
     def test_create_delete_server(self):
@@ -29,7 +29,7 @@ class ServersTest(unittest.TestCase):
         file_contents = 'This is a test file.'
         personality = [{'path' : '/etc/test.txt', 
                        'contents' : base64.b64encode(file_contents)}]
-        resp, server = self.client.create_server(name, 
+        resp, server = self.client.create_server_object(name, 
                                                  self.image_ref, 
                                                  self.flavor_ref, 
                                                  meta=meta, 
@@ -38,18 +38,18 @@ class ServersTest(unittest.TestCase):
                                                  personality=personality)
         
         #Wait for the server to become active
-        self.client.wait_for_server_status(server['id'], 'ACTIVE')
+        self.client.wait_for_server_status(server.id, 'ACTIVE')
         
         #Verify the specified attributes are set correctly
 #        resp, server = self.client.get_server(server['id'])
-        self.assertEqual('1.1.1.1', server['accessIPv4'])
-        self.assertEqual('::babe:220.12.22.2', server['accessIPv6'])
-        self.assertEqual(name, server['name'])
-        self.assertEqual(self.image_ref, server['image']['id'])
-        self.assertEqual(str(self.flavor_ref), server['flavor']['id'])
+        self.assertEqual('1.1.1.1', server.accessIPv4)
+        self.assertEqual('::babe:220.12.22.2', server.accessIPv6)
+        self.assertEqual(name, server.name)
+        self.assertEqual(self.image_ref, server.image.id)
+        self.assertEqual(str(self.flavor_ref), server.flavor.id)
         
         #Teardown
-        self.client.delete_server(server['id'])
+        self.client.delete_server(server.id)
     
     
     @attr(type='smoke')    
@@ -116,5 +116,13 @@ class ServersTest(unittest.TestCase):
         
         #Teardown
         self.client.delete_server(server['id'])
+        
+  
+        
+   
+    
+        
+         
+        
         
 

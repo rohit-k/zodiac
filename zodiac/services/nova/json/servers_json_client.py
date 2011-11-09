@@ -3,6 +3,8 @@ import zodiac.common.rest_client as rest_client
 import time
 import zodiac.config
 from zodiac import exceptions
+from zodiac.domain.serverData import ServerData
+from zodiac.domain.serverDataParser import ServerDataParser
 
 class ServersClient(object):
 
@@ -14,6 +16,24 @@ class ServersClient(object):
         self.build_timeout = self.config.nova.build_timeout
         self.headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
         
+
+    def get_post_body(self, name, image_ref, flavor_ref, meta, personality, accessIPv4, accessIPv6, adminPass):
+        post_body = {'name':name, 
+            'imageRef':image_ref, 
+            'flavorRef':flavor_ref}
+        if meta != None:
+            post_body['metadata'] = meta
+        if personality != None:
+            post_body['personality'] = personality
+        if adminPass != None:
+            post_body['adminPass'] = adminPass
+        if accessIPv4 != None:
+            post_body['accessIPv4'] = accessIPv4
+        if accessIPv6 != None:
+            post_body['accessIPv6'] = accessIPv6
+        post_body = json.dumps({'server':post_body})
+        return post_body
+
     def create_server(self, name, image_ref, flavor_ref, meta = None, 
                       personality = None, accessIPv4 = None, accessIPv6 = None,
                       adminPass = None):
@@ -28,31 +48,35 @@ class ServersClient(object):
         the server.
         """
         
-        post_body = {
-            'name': name,
-            'imageRef': image_ref,
-            'flavorRef': flavor_ref,
-        }
-        
-        if meta != None:
-            post_body['metadata'] = meta
-            
-        if personality != None:
-            post_body['personality'] = personality
-            
-        if adminPass != None:
-            post_body['adminPass'] = adminPass
-            
-        if accessIPv4 != None:
-            post_body['accessIPv4'] = accessIPv4
-            
-        if accessIPv6 != None:
-            post_body['accessIPv6'] = accessIPv6
-        
-        post_body = json.dumps({'server': post_body})
+        post_body = self.get_post_body(name, image_ref, flavor_ref, meta, personality, accessIPv4, accessIPv6, adminPass)
         resp, body = self.client.post('servers', post_body, self.headers)
         body = json.loads(body)
+        
         return resp, body['server']
+    
+    def create_server_object(self, name, image_ref, flavor_ref, meta = None, 
+                      personality = None, accessIPv4 = None, accessIPv6 = None,
+                      adminPass = None):
+        """
+        Creates an instance of a server.
+        name: The name of the server.
+        image_ref: The reference to the image used to build the server.
+        flavor_ref: The flavor used to build the server.
+        meta: A dictionary of values to be used as metadata. 
+        The limit is 5 key/values.
+        personality: A list of dictionaries for files to be injected into 
+        the server.
+        """
+        
+        post_body = self.get_post_body(name, image_ref, flavor_ref, meta, personality, accessIPv4, accessIPv6, adminPass)
+        resp, body = self.client.post('servers', post_body, self.headers)
+        body = json.loads(body)
+        
+        server = ServerDataParser().getServer(body)
+        return resp, server
+        
+
+
         
     def update_server(self, server_id, name = None, meta = None, accessIPv4 = None, 
                       accessIPv6 = None):
